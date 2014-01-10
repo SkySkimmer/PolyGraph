@@ -1,0 +1,862 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{units}
+\usepackage{mathtools}
+\usepackage[bookmarks]{hyperref}
+\usepackage[super]{nth}
+\usepackage{cmll}
+\setlength{\parindent}{5cm}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newtheorem{propo}{Proposition}
+
+\title{Polynomials and Graphs}
+\date{2013-2014 \nth{1} semester}
+
+\begin{document}
+\maketitle
+
+\newpage 
+\tableofcontents
+
+\newpage
+\section{Introduction}
+Existence results $\rightarrow$ computation, counting\\
+
+\section{Polynomials}
+\paragraph{Min number $C_n$ of complete bipartite graphs to cover $K_n$\\}
+$C_n = ceil (\log_2 n)$\\
+Existence: To each vertex give a word in $\{0,1\}^{C_n}$, each bipartite $B_i$ is between vertices of $i$th bit $= 0$\\
+Minimal: exercise\\
+
+\paragraph{Bipartite graphs partitioning $K_n$\\}
+\begin{itemize}
+\item At most $n-1$
+\item Graham-Pollak '71: optimal\\
+	Tverberg '81: Consider vertices of $K_n$ as variables $(x_i)_{1 \leqslant i \leqslant n}$\\
+	Assume $E(K_n) = \bigcup\limits_{1 \leqslant i < l-1} E(K_{A_i,B_i}$ with $l < n-1$ and $A_i, B_i \subset V(K_n)$\\
+	\[(\sum x_i)^2 = \sum\limits_{i=1}^n x_i^2 + 2 \sum\limits_{1 \leqslant i < j \leqslant n} x_i x_j\]
+	\[ = \sum\limits_{i=1}^n x_i^2 + 2 \left( \sum\limits_{i=1}^l \left( \sum\limits_{x_j \in A_i} x_j \right) \left( \sum\limits_{x_k \in B_i} x_k \right) \right) \]
+	Consider $(x_i)$ not all zero with $\forall i \leqslant l, \sum\limits_{x_j \in A_i} x_j = 0$ and $\sum\limits_{i=1}^n x_i = 0$\\
+	Less than $n$ constraints: there is such an $(x_i')$\\
+	Using previous lines: $\sum\limits_i x_i^2 = 0$ contradiction
+\item Combinatorial argument for $\geqslant c * n$ for constant $c$ ??	
+\end{itemize}
+
+\subsection{Chromatic Number}
+Let $G=(V,E)$ graph, $S \subset V$ is:
+\begin{itemize}
+\item stable set when $\forall x <> y \in S, (x,y) \notin E$
+\item clique when $\forall x <> y \in S, (x,y) \in E$
+\end{itemize}
+$\alpha(G) :=$ maximum size of stable set\\
+$\omega(G) :=$ maximum size of clique e.i. clique number\\
+$G$ is $k$-colorable when $\exists C : V \rightarrow [[1;k]]$ such that $\forall (x,y) \in E, C(x) <> C(y)$\\
+For $C$ a $k$-coloring, the set of vertices with a given color is called a color class\\
+$k$-color $\Leftrightarrow \exists$ partition into $K$ stable sets\\
+The chromatic number $\xi(G) :=$ min $k$ such that $G$ is $k$-colorable\\
+A certificate $\xi(G) \leqslant k$ is a $k$-coloring\\
+A certificate $\xi(G) \geqslant k$ is hard\\
+$\omega(G)$ is a lower bound.
+
+\paragraph{$\omega = 2$:} triangle-free graph\\
+Construction: Mycielski '55\\
+\begin{itemize}
+\item $M_2 :=$ line
+\item $M_3 :=$ pentagon
+\item $M_4 :=$ copy $M_3$, then copy its points. For a point copy link it to the originals of its neighbors + a new universal point
+\end{itemize}
+Properties:
+\begin{itemize}
+\item triangle free
+\item $\xi (M_i) = i$
+\item Every $M_i$ is critical: if a vertex is removed then the chromatic number is less than $i$ (possibly edge critical)
+\item The sequence $(M_i)_i$  is universal: $\forall G$ triangle free, $\exists i, M_i$ contains $G$ as an induced subgraph (obtained by removing vertices)
+\end{itemize}
+
+Definition: the girth of graph is the minimum length of a cycle in the graph\\
+e.g. triangle free $\Leftrightarrow$ girth at least $4$\\
+BFS of depth $girth/2$ from any vertex is a tree\\\\
+
+Construction: Erdos '59\\
+$\forall  g, \exists G, \xi(G) \geqslant g \wedge girth(G) \geqslant g$\\
+\begin{itemize}
+\item take a random graph on $n$ vertices and $p \left( (x,y) \in E \right) \frac{1}{n^{1-\varepsilon}}$ for $\varepsilon$ small\\
+	Expected degree: $n^\varepsilon$\\
+	$\mathbb{E}($ cycles of length $< g) = o(n)$\\
+	$\mathbb{E} \left( \alpha(G) \right) = o(n)$
+\item For every constant $c \in \mathbb{N}, \exists G$ with the number of cycles of length $< g$ is less than or equal to $\frac{n}{c}$
+	and $\alpha(G) \leqslant \frac{n}{c}$\\
+	In $G$ delete $\leqslant \frac{n}{c}$ vertices to remove cycles of length $< g$, this produces $H$\\
+	\[\alpha(H) \leqslant \frac{n}{c}\]
+	$girth(H) \geqslant g$ and
+	\[\xi(H) \geqslant \frac{|V(H)|}{\alpha(H)} \geqslant \frac{\frac{\left( c-1 \right) .n}{c}}{\frac{n}{c}} = c-1\]
+\end{itemize}
+
+\paragraph{Kneser graphs\\}
+Fix $0 < k < n$ integers\\
+The kneser graph $Kn(k,n)$ has a set of vertices $\binom{2n+k}{n}$ identified to subset\\
+Edges are between non intersecting sets\\
+NB: still defined for $k \geqslant n$\\
+If $k < n$ then $Kn(k,n)$ is triangle free\\
+For $k$ fixed and $n \rightarrow \infty$, no short-odd cycles: odd girth is large $\Leftrightarrow$ every small induced graph is bipartite\\
+Conjecture: $\xi \left( Kn(k,n) \right) = k+2$ (Kneser '55)\\
+\begin{itemize}
+\item there is a $k+2$ coloring:\\
+	Color with $1$ all vertices containing $1$\\
+	Color with $2$ all remaining vertices containing $1$\\
+	Keep going until $k$, the remaining graph is $X \subset [[ k+1; 2n+k]]$, it is a matching: $2$ more colors\\
+	Result: $k+2$-coloring
+\item Lovasz '78:\\
+	Assume that $\exists c$ a $k+1$-coloring.
+	\begin{itemize}
+	\item Distribute the dots $[[1; 2n+k]]$ on the $k$-dimension sphere $S^k$ (living in dimension $k+1$) such that in every open half sphere there are at least $n$ dots
+	\item Transport $c$ on the sphere: every point $x \in S^k$ is the pole of some half-sphere $H_x$.\\
+		$x$ sees at least $n$ elements. $\exists X \subset [[1; 2n+k]]$ of size $n$, $X \subset H_x$.\\
+		\[c'(x) := c(X)\]
+		If multiple $X$ are possible give every color to $x$ (multicoloring)\\
+		$c'$ is a $k+1$-multicoloring of $S^k$\\
+		Every color induces an open subset of $S^k$\\
+	\item Borsuk-Ulam: every covering of $S^k$ by $k+1$ open sets has $2$ antipodal points $x$ and $\bar{x}$ with the same color.
+		Pick $X$ and $bar{X}$ giving the color, $c(X) = c(\bar{X})$ but $(X,\bar{X}) \in E \left( Kn(k,n) \right)$
+		CONTRADICTION: no $k+1$-coloring
+	\end{itemize}
+	Additionally, $\forall G, \xi(G) \geqslant$ topological connectivity of the neighborhoods of $G$
+\end{itemize}
+
+\subsection{Edge coloring}
+A $k$-edge coloring of $G$ is a function $c : E \rightarrow [[1;k]]$ such that $\forall (e,f) \in E^2, e \bigcap f \rightarrow c(e) <> c(f)$\\
+(where intersection means having a vertex in common)\\
+Color classes are matchings, $\exists k$-edge coloring $\Leftrightarrow E(G)$ partitionnable into $k$ matchings\\
+Chromatic index $\xi'(G)$ is the minimum $k$ such that $G$ is $k$-edge colorable.\\
+Trivial lower bound: $\Delta(G)$ maximum degree of $G$\\
+Computing $\xi'$ is NP-hard\\
+
+\paragraph{Vizing '64:} $\forall G, \xi'(G) \leqslant \Delta(G) + 1$\\
+Proof by Schrijver\\
+A graph is "class 1" when its chromatic index is its degree, "class 2" otherwise.\\
+Case: $\Delta$-regular graph (all vertices have degree $\Delta$)\\
+Class 1 $\Leftrightarrow \exists$ $\Delta$ perfect matchings (matching covering all vertices) partitioning $E$\\
+Peterson 1890: every cubic (3 regular) connected bridgeless graph has a perfect matching.\\
+(Bridgeless: removing an edge leaves the graph connected)
+
+\paragraph{Snark: cubic bridgeless connected class 2 graph\\}
+Tait 1890: $4$-color theorem $\Leftrightarrow$ no snark is planer\\
+Seymour cycle double cover: every bridgeless graph has a collection of cycles covering every edge twice $\Leftrightarrow$ true on snarks.\\
+Tutte nowhere 5 flow conjecture $\Leftrightarrow$ true on snarks.\\
+
+\paragraph{Line graph:} $L(G) := (E,\{(e,f) | e <> f \wedge e \bigcap f <> 0 \}$\\
+Then $\xi(L(G)) = \xi'(G)$\\
+
+\subsection{Matchings}
+\paragraph{Hall 1936:} in a bipartite graph $(X,Y), \exists$ a matching saturating $X \Leftrightarrow \forall X' \subset X, |N(X')| \geqslant |X'|$.\\
+A contracting set $X'$ ($|N(X')| < |X'|$) is a co-NP certificate: there is no matching covering $X$.\\
+Equivalently in a hypergraph $H=(V,E)$ where $E \subset P(V), \exists$ an independant set of representative (ISR) (choice of pairwise distinct elements in $e \in E$) $\Leftrightarrow \forall E' \subset E, |\bigcup E'| \geqslant |E'|$\\
+Transform hypergraph into graph: for $e \in E, v \in V, (e,v)$ is an edge when $v \in e$.\\
+
+\paragraph{Tutte 1947 and Berge 1958:\\}
+A graph $G=(V,E)$ has a perfect matching $\Leftrightarrow \forall S \subset V,$ the number of odd connected components of $G \backslash S$ is at most $|S|$.\\
+(odd component: all vertices are connected and not connected to the rest of the graph)\\
+This gives a certificate that there is no perfect matching.\\
+Perfect matching in graphs is NP $\bigcap$ co-NP.\\
+Edmonds $1965$: polynomial algorithm.
+
+\paragraph{Corollary:} every bridgeless cubic graph has a perfect matching.\\
+Let $S \subset V$, show that $|odd(G \backslash S)| \leqslant |S|$.\\
+Consider $C = (c_1 ... c_l)$ odd components. The number of edges leaving $c_i$ is greater than $2$ (graph is brigdeless).\\
+The number of edges leaving $c_i$ is $\sum\limits_{x \in c_i} d(x) = 2 e(c_i) + e(c_i, S)$ and $= 3 |c_i|$.\\
+The number of edges leaving $\bigcup c_i$ is $\geqslant 3.l$\\
+The number of edges entering $S$ is $\leqslant 3.|S|$\\
+\[|S| \geqslant l\]
+
+\paragraph{Konig 1916:} Bipartite graphs are class 1.\\
+Let $G=(X,Y)$ bipartite.\\
+$\exists$ a matching covering all vertices with degree $\Delta$. Iteratively remove this matching: this gives a partition into $\Delta$ matchings.\\
+\begin{itemize}
+\item Proof 1: $\exists$ a matching $M_X$ covering all $\Delta$ vertices in $X$.\\
+	It comes from Hall: $\forall X' \subset X_\Delta$ the number of edges leaving $X'$ is $\Delta.|X'|$.\\
+	The number of edges received is at most $\Delta.|N(X')|$, then $|N(X')| \geqslant |X'|$.\\
+	Similarly $\exists M_Y$ covering $\Delta$ vertices in $Y$.\\
+	Orient $M_X$ from $X$ to $Y$ and $M_Y$ from $Y$ to $X$.\\
+	Extract a matching covering vertices of positive out-degree. Non covered vertices have out-degree $0$ so are not in $X_\Delta$ or $Y_\Delta$.\\
+\item Proof 2: using polytopes.\\
+	Consider a matrix such that the lines are edges and the columns are matchings.\\
+	A cell is $O$ if the edge belongs to the matching, $1$ otherwise.\\
+	NB: one column is zeroed.\\
+	Vectors are points in $\mathbb{R}^m$ with $m$ number of edges.\\
+	The convex hull is the Bipartite Matching Polytope $MP(G)$.\\
+	An element is a point with coordinates $x_{i,j}$ function of the edge $(i,j)$.\\
+	\emph{Theorem:} $MP(G)$ is described by the following constraints:
+	\begin{itemize}
+	\item $x_{i,j} \geqslant 0$
+	\item $\forall i in X, \sum\limits_{i,j \in E}x_{i,j} \leqslant 1$
+	\item $\forall i in Y, \sum\limits_{i,j \in E}x_{i,j} \leqslant 1$
+	\end{itemize}
+	The point $\frac{1}{\Delta} . \mathbb{1}$ belongs to the polytope and realises inequalities with equality for degree $\Delta$ vertices.\\
+	Therefore it is realised as a barycenter of matchings $\sum\limits_{i \leqslant l} \varepsilon_i M_i$\\
+	Each $M_i$ must realise equality on $\Delta$ vertices: it covers degree $\Delta$ vertices.\\
+\item Proof 3: by matroids.\\
+	Matroid: hypergraph $H=(S,I)$ ($S$ ground set, $I$ hyperedges i.e. independent) with conditions:
+	\begin{itemize}
+	\item $I <> 0$
+	\item $\forall f \in I, \forall e \subset f, e \in I$
+	\item $\forall e, \forall f \in I, |e| < |f| \rightarrow \exists x \in f \backslash e, e \bigcup \{x\} \in I$
+	\end{itemize}
+	e.g. for $S$ set of vectors, $e \in I \Leftrightarrow$ e is a set of linearly independent vectors\\
+	A base is a largest size edge.\\
+	The rank of the matroid is the size of a base.\\
+	For $(V,E)$ graph, $(E, \{F \subset E | F$ acyclic$\})$ is the graphic matroid.\\
+	If the graph is connected bases are spanning trees.\\
+	When elements of $S$ have weights, the greedy algorithm produces a maximum weight basis.\\
+	\emph{Parition matroid:} if $S$ has a partition into $S_1 ... S_l$ let $I := \{ S' \subset S, \forall i, |S' \bigcap S_i| \leqslant 1 \}$\\\\
+	%%%%%%% left empty deliberately %%%%%%%%%%%
+	Let $M_1=(S,I_1)$ and $M_2=(S,I_2)$ matroids. $M_1 \bigcap M_2 := (S,I_1 \bigcap I_2)$ where we keep hyperedges which are independents in both matroids.\\
+	Bipartite matchings are matroid intersections: let $(X,Y)$ bipartite with edges $E$.\\
+	$H := (E,M)$ with $M := \{E' \subset E$ matching$\}$.\\
+	$M_1$ is the set of edges with degree in $X$ at most 1.\\
+	It is a partition matroid.\\
+	$M_2$ same for $Y$.\\
+	Then $M_1 \bigcap M_2 = H$.\\
+	\emph{Theorem} (Edmonds): computing a largest hyperedge in $M_1 \bigcap M_2$ is in P.\\
+	Also rank$(M_1 \bigcap M_2) = \min\limits_{X \subset S} (rank_{M_1}(X) + rank_{M_2}(S \backslash X)$\\
+\end{itemize}
+
+\subsection{List coloring}
+Make coloring harder to capture more problems and have more tools.\\
+Erdos-Rubin-Taylor: the input of a list coloring problem is a graph $G=(V,E)$ and a function $L$ such that $\forall v \in V, L(v)$ is a list of colors (integers).\\
+The output is a coloring $c : V \rightarrow \mathbb{N}$ with
+\begin{itemize}
+\item $\forall v, c(v) \in L(v)$
+\item $\forall (u, v) \in E, c(u) <> c(v)$
+\end{itemize}
+Also called an $L$-coloring.\\
+
+\paragraph{Transform to simple coloring:} give the same list to all vertices.\\
+
+\paragraph{List chromatic number $\xi_l(G)$} is the minimum $k$ such that when all lists have size $k$ there exists a list coloring.\\
+$\xi_l(G)$ can be greater than $2$ for bipartite graphs.\\
+We can have $\xi_l(G) > \xi(G)$.\\
+$\exists$ bipartite graph with arbitrarily large $\xi_l$.\\
+$\forall G, G$ planar $\rightarrow \xi_l(G) \leqslant 5$ (proof by C. Thomassen).\\
+
+\paragraph{Brooks's theorem:} if $G$ connected is not a clique nor an odd cycle then $\xi \leqslant \Delta$\\
+\begin{itemize}
+\item If $\exists x \in V, d(x) < \Delta$ then $G$ is $\Delta$-colorable.\\
+	Start with a search tree from $x$. Consider an elimination order.\\
+	$\forall i > 1, x_i$ has a neighbor with index less than $i$.\\
+	Color greedily: $x_i$ has at most $\Delta-1$ colors used in its neighborhood when it is colored. $x_1$ has degree $< \Delta$.\\
+\item Now consider $G$ is $\Delta$-regular. We can assume $G$ is 2-connected (no cut vertex) (will not work for lists).\\
+\item Pick $x$ a make a depth first search tree: spanning tree such that branches are only linked through comon ancestors.\\
+	If not a path: pick a branching point $z$ with children $u$ and $v$.\\
+	If $u$ and $v$ are removed the graph remains connected (because DFS and item 2).\\
+	Make an elimination order $(z \equiv x_1) \; x_2 ... x_{n-2}  \; u \; v$. Color $u$ 1, $v$ 1. $x_1$ will be colorable.\\
+	Use greedy algorithm, finish.
+\item If $\forall x \in V, \forall$ DFS rooted at $x$ we get an hamilton path.
+	If $G$ is not a clique, $\exists a \; b \; c, (a,b) \in E \wedge (b,c) \in E \wedge (a,c) \notin E$\\
+	If $\Delta > 2$ the case of cycles is easy.\\
+	Root a DFS from $a$ starting $a \; b \; c$. It is a hamilton path.\\
+	Removing $a \; c$ does not disconnect: back to previous item.
+\end{itemize}
+This proof can be adapted to lists (Brooks) (consider 2-connected first).
+
+\paragraph{Erdos, Rubin, Taylor\\}
+If $\forall x \in V, |L(x)| = d(x) \rightarrow G$ is $L$-colorable.
+
+\subsection{Dinitz problem}
+Let $M$ a $n \times n$-array where $\forall i \; j, m_{i,j}$ is a set of size $n$ (set of integers).\\
+Can we choose 1 element per $m_{i,j}$ such that the result is a latin square (lines/columns have pairwise distinct elements)?\\
+\[ \exists? f : \forall i \; j, m_{i,j} | \forall i \; j \; j', j<>j' \rightarrow m_{i,j} <> m_{i,j'} \wedge m_{j,i} <> m_{j',i} \]
+Galvin: kernel method.\\
+Alon-Tarski: polynomial method.\\
+Graph representation: vertices are in $n \times n$, edge when distance 1. $L(x) = m_x$, $\xi_l(G_{n,n}) ?= n$\\
+Erdos Rubin Taylor: $\Delta = 2n-2$. We divide by 2 by orienting edges.\\
+$G_{n,n}$ is line graph of $K_{n,n}$\\
+Generalise: $\xi_l'(G) = \Delta$ when bipartite
+\[ \forall G, \xi_l'(G) ?= \xi'(G) \]
+Note that $\xi_l'(G) \leqslant 2\Delta - 2$.\\
+
+\paragraph{Jeff Kahn:} $\xi_l'(G) \leqslant \Delta + o(\Delta)$\\
+Semirandom methods + hardcore distribution on the matching polytope\\
+"draw a random matching in a graph"\\
+
+\paragraph{Galvin proof:} kernel method\\
+A kernel in a directed graph $D=(V,A)$ is $S \subset V$ such that
+\begin{itemize}
+\item $S$ is a stable set
+\item $S$ is dominated: $\forall x \notin S \exists y \in S, (x,y) \in A$
+\end{itemize}
+From game theory: winning strategy\\
+Odd induced cycles have no kernels\\
+Where to find kernels:
+\begin{itemize}
+\item bidirected graphs: $\forall (x,y) \in A, (y,x) \in A$\\
+	Use a stable set maximum for inclusion.
+\item Acyclic directed graphs\\
+	Start with $S=\emptyset$. While $D <> \emptyset$,\\
+	\[S := S \bigcup sink(D)\]
+	\[D := D \backslash \{ sink(D) \bigcup N^- (sink(D)) \} \]
+	Finally return $S$.
+\item bipartite graphs
+\end{itemize}
+Common property: every induced subgraph of $D$ has a kernel.\\
+
+\paragraph{Bondy, Boppana, Siegel:} if $D$ is kernel perfect and every vertex $x \in V$ has a list $L(x)$ of size $d^+(x) + 1$ then $D$ is $L$-colorable.\\
+Fix a color $1$ appearing in some list, $V_1 = \{ x, 1 \in L(x) \}$\\
+$D_1$ the graph induced by $V_1$, it has a kernel $K_1$.\\
+Color $1$ all elements of $K_1$ (stable set) and delete $1$ from the list of vertices of $D \backslash K_1$\\
+$1$ less color and every edge not in $K_1$ has out degree decreased.
+
+\paragraph{Dinitz proof}
+\[ \xi_l = 4 = d^+(x) + 1 \]
+We need an orientation where $\forall x, d^+(x) \leqslant 3$ and kernel perfect.\\
+In particular triangle free.\\
+Lines and columns are cliques, orientation is total order.\\
+
+\paragraph{Sands, Samer, Woodrow 1982\\}
+If a directed graph is the union of 2 (strict) partial orders on the same underlying set, then it is kernel perfect.\\
+Seho's proof: induction on $|V|$, note $P_1$ and $P_2$ the orders.\\
+Let $M_1$ the set of maximum elements in $P_1$. If stable set it is a kernel, otherwise $\exists (x,y)$ edge in $P_2$ with $x$ and $y$ in $M_1$.\\
+Remove $x$, apply induction on $D \backslash x$ to get a kernel $K$ on it.\\
+If $y \in K, K$ is a kernel for $D$.\\
+If $y \notin K, \exists z \in K, y \rightarrow z$ but $y \in M_1$ so $y \rightarrow^{P_2} z$ and $x \rightarrow z$. Then $K$ is a kernel.
+
+\paragraph{Consequences}
+\begin{itemize}
+\item bipartite graphs are kernel perfect (up edges + down edges)
+\item Let $T$ an orientation for a complete graph (a tournament). Color the edges in 2 colors arbitrarily.\\
+	$\exists u \in V, \forall v \in V, \exists$ monocolor path between $u$ and $v$.\\
+	Consider the transitive closure of [color] arcs: 2 partial orders. $T$ is included in their union which has a kernel.\\
+	The kernel is a vertex (no stable sets size 2 in tournament), name it $v$.\\
+	This vertex is dominated for any vertex by the [color] transitive closure: exists a [color] path.\\
+	Open: color with 3 colors, $? \exists S \subset V, |S|$ bounded such that $\forall x \notin S \exists$ monochromatic path from $S$ to $x$.\\
+	Bound expected to be $3$.\\
+\item Every triangle free orientation of the line graph of $K_{n,n}$ is kernel perfect ($\Rightarrow$ Dinitz).\\
+	Vertical + horizontal partial orders
+\item \emph{Stable Marriage Theorem}\\
+	Sets $B$ and $G$ of size $n$.\\
+	Each element of $B$ (resp $G$) is associated with a total order on $G$ (resp $B$): triangle free orientation of $L(K_{n,n})$.\\
+	$\exists$ kernel in the line graph: set of edges. Stable: perfect matching, dominated: no edge such that it is preferred to the chosen one by both sides.
+\item Galvin: for every bipartite graph, $\xi_l'(G) = \Delta$\\
+	Orient the line graph $L(G)$ such that it is triangle free and $\Delta^+ \leqslant \Delta - 1$\\
+	The edges can be $\Delta$-colored (because $G$ class 1).\\
+	Orientation: $\forall e \; f$ edges in $G$, $\{e,f\} \in L$ when incident on $V_1$ xor $V_2$.\\
+	Then we orient $(e,f) \in L$ if incident on $V_1$ and $c(e) < c(f)$ or incident on $V_2$ and $c(f) < c(e)$\\
+	Then oriented $L$ is kernel perfect and $\Delta$ list colorable.
+\end{itemize}
+
+\paragraph{Alan Tarsi method\\}
+Let $G=(V=\{ x_1 ... x_n \},E)$ graph\\
+The graph polynomial $P_G(x_1 ... x_n) := \Pi_{(x_i,x_j) \in E, i<j} (x_i - x_j)$\\
+Every monomial has degree $m = |E|$.\\
+A factor is obtained by selecting $x_i$ or $-x_j$ for every edge: equivalent to orienting the edge.\\
+In a term $\Pi x_i^{t_i}$, $t_i$ corresponds to the outdegree of $x_i$ in the orientation.\\
+The coefficient of the term is $+$ or $- 1$ depending on the parity of the number of backward arcs in the orientation.\\
+Let $D$ an orientation with outdegree sequence $(t_i) =: (d^+(x_i))$\\
+$ O((t_i)) = \{ D'$ with degree sequence $(t_i) \}$\\
+$EO((t_i)) = \{ D' \in O((t_i)), back(D')$ even $\}$\\
+$OO$ same for odd backwards.\\
+In $P_G$ a monomial $c . \Pi x_i^{t_i}$ verifies $c = |EO((t_i))| - |OO((t_i))|$\\
+$P_G = \sum\limits_{(t_i) valid}(|EO((t_i))| - |OO((t_i))|) \Pi_i x_i^{t_i}$\\
+
+\paragraph{If $c : V \rightarrow \mathbb{N}$  coloring then $P_G((c(x_i)_{1 \leqslant i \leqslant n})$ is nonzero when $c$ is a proper coloring.\\}
+
+Let $D,D' \in O(d_1 ... d_n)$. Then $D \backslash D'$ is an eulerian subgraph of $D$, i.e. $\forall x_i, d^+(x_i) = d^-(x_i)$\\
+Corollary: we can go from $D$ to $D'$ by inversing the orientation of a sequence of circuits.\\
+($D, D'$ differ on an eulerian subgraph $E$ which is an arc-disjoint union of circuits.)\\
+
+\paragraph{Lemma:} Let $D \in O(d_1 ... d_n)$\\
+Let $\phi_D : O(d_1 ... d_n) \rightarrow E(D)$\\
+$\phi_D(D') := D \backslash D'$\\
+Where $E(D)$ set of eulerian subgraphs of $D$\\
+Then $\phi_D$ is a bijection. $\phi_D^{-1}(D')$ reverses the arcs of $D'$ in $D$.\\
+Now $OE(D) = \{$ eulerian subgraphs of $D$ with an odd number of arcs$\}$\\
+$EE$ with an even number of arcs.\\
+NB: $\forall D, EE(D) <> \emptyset$: $\emptyset \in EE(D)$\\
+
+\paragraph{Lemma:} if $D \in EO(d_1 ... d_n)$ then $\phi_D(EO(d_1 ... d_n)) = EE(D) \wedge \phi_D(OO(d_1 ... d_n)) = OE(D)$\\
+If $D$ even orientation then $eo(d_i) - oo(d_i) = ee(D) - oe(D)$\\
+If $D$ odd orientation then $eo(d_i) - ee(d_i) = -(ee(D) - oe(D))$\\
+In both cases nonzero when $ee(D) <> oe(D) \Leftrightarrow (x_1^{d_1} ... x_n^{d_n})$ appears in $P_G$\\
+
+\paragraph{Combinatorial Nullstellensatz (Alan)\\} 
+Let $P(x_1 ... x_n) \in \mathbb{F}[x_1 ... x_n]$ where $\mathbb{F}$ field such that $d^{\circ}(P) = d_1 + ... + d_n$ and $x_1^{d_1} ... x_n^{d_n}$ has nonzero coefficient.\\
+Let $S_1 ... S_n \subset \mathbb{F}$ with $\forall i, |S_i| = d_i + 1$.\\
+Then \[ \exists s_1 \in S_1 ... s_n \in S_n, P(s_1 ... s_n) <> 0 \]
+By induction:
+\begin{itemize}
+\item degree $0$: $P <> 0$ and every $S_i$ is a singleton.
+\item $d^\circ > 0$\\
+	We can assume $d_1 > 0$. Select $s_1$ in $S_1$.\\
+	If $P$ does not vanish on $\{s_1\} * ... * S_n$ we are done.\\
+	If it does vanish, divide $P$ by $(x_1 - s_1)$: $P = Q . (x_1 - s_1) + R$ with $R \in \mathbb{F}[x_2 ... x_n]$ and $deg(Q) = d-1$ with nonzero coefficient on $x_1^{d_1 - 1} x_2^{d_2} ... x_n{d_n}$.\\
+	$R$ vanishes on $S_2 * ... * S_n$.\\
+	Induction hypothesis on Q: $s_1' \in S_1 \backslash \{s_1\}, s_2 \in S_2 ... s_n \in S_n$ and $Q(s_1', s_2 ... s_n) <> 0$ and $R(s_2 ... s_n) = 0$\\
+	$P(s_1', s_2 ... s_n) <> 0$\\
+\end{itemize}
+Then if $D$ is an oriented graph such that every vertex $x$ has a list $L(x)$ of $d^+(x) + 1$ colors, and if $ee(D) <> oe(D)$ then $D$ is $L$-colorable.\\
+NB: $oe <> ee$ can be replaced by $D$ is Kernel-perfect.\\
+Common generalisation?\\
+If $D$ is acyclic $ee-oe \equiv 1-0 = 1 <> 0$: greedy coloring\\
+If $D$ bipartite, no odd cycles $\rightarrow oe = 0 \wedge ee > 0$\\
+
+\paragraph{Dinitz problem} an orientation of the line graph of $K_{n,n}$ can have $ee = oe$ (e.g. with $n = 3$)\\
+Conjecture: for even $n$ any orientation with $d^+ = n-1$ statisfies $ee <> oe$.\\
+
+\paragraph{Conjecture (Erdos):} every graph $G$ which is the union of a hamilton cycle of length $3k$ and $k$ disjoint triangles has $\xi = 3$ (and $\xi_l = 3$). (Cycle + triangle conjecture)\\
+Proof (Fleischner and Stiebitz): every orientation of $G$ with $d^+ = 2$, $\forall x$ statisfies $ee(D) -oe(D) \equiv 2 [4]$ and $G$ is 3-list-colorable.\\
+NB: Kernel perfection n/a.\\
+Problem STABLE-TRANSVERSAL:\\
+Input $G=(V,E)$ with partition $V_1 ... v_n$\\
+Output: $\exists?  S$ stable set such that $\forall i, |S \bigcap V_i| = 1$\\
+Case: all $V_i$ have size $3$ and $G$ is a cycle of length $3k$\\
+Case: $G$ disjoint union of cliques\\
+Stable-Transversal is pretty much SAT.\\
+Characterisation: If $\forall I \subset [[1;k]], \eta(S(G[\bigcup_{i \in I} V_i])) \geqslant |I|$ then $G$ has a S.T.\\
+Corollary: IF $\forall i, |V_i| = 3$ and $G$ is a disjoint union of cycles of lengths $<> 1 [3]$ then $G$ has a S.T.\\
+
+
+\section{Polynomials}
+$P_G(\lambda) :=$ \# of $\lambda$-colorins of $G$ is the chromatic polynomial.\\
+$P_G(\lambda) := |\{c : V \rightarrow \{n < \lambda\}, c$ colors$\}$\\
+If $G$ contains a loop: $P_G = 0$\\
+If $G$ clique, $P_G = \Pi_{i=1}^n (\lambda - i + 1)$\\
+
+\paragraph{Theorem:} $P_G$ is a polynomial.\\
+Let $P$ partition of $V$ into $p$ stable sets.\\
+$P$ generates $\Pi_{i=1}^p (\lambda - i + 1)$ labeled colorings.\\
+\[ P_G(\lambda) = \Sigma_{P \; stable} \Pi_{i=1}^{|P|} (\lambda -i + 1) \]
+
+\paragraph{Expansion\\}
+$P_G = \lambda^n - m \lambda^{n-1} + ...$ with $n := |V|$ and $m := |E|$\\\\
+
+Size of union: for $S$ universe and $A_1 ... A_l \subset S, |S \backslash \bigcup_i A_i| = \Sigma_{I \subset [[1,l]]}(-1)^{|I|}|\bigcap_{i \in I} A_i|$\\\\
+
+$S = V \rightarrow [[1,l]]$ and for each $e \in E, A_e = \{ f : S, f (e_1) = f (e_2) \}$
+\[ P_G = \Sigma_{I \subset [[1,m]]} (-1)^{|I|} |A_I| \]
+$|A_I| = \lambda^{k(G_I)}$ where $k(G_I)$ number of connected components in $G_I$\\
+\[ P_G = \Sigma_{I \subset E} (-1)^{|I|} \lambda^{k(G_I)} \]
+
+\paragraph{Graph theory\\}
+Notations: $G \backslash e$ graph obtained by removing $e$ and $G / e$ obtained by contracting $e$.\\
+NB: the contracted graph may have a multiple edge. We simplify them into simple edges.\\
+
+\[ P_G = P_{G \backslash e} - P_{G/e} \]
+
+\paragraph{Tree case\\}
+By considering the edge $e$ between a leaf $f$ and its immediate ancestor\\
+$T \backslash e = T/e + \{f\}$\\
+$P_G = \lambda P_{G/e} - P_{G/e}$\\
+$P_G = (\lambda - 1) P_{G/e}$\\
+$P_G = \lambda . (\lambda - 1)^{n-1}$\\
+If $P_G$ has this value then $G$ is a tree.\\
+
+\paragraph{Cycle\\}
+$P_{C_n} = \lambda.(\lambda - 1)^{n-1} - P_{C_{n-1}}$\\
+$P_{C_n} = (-1)^{n-1} \lambda . \Sigma_{i=1}^{n-1} (-1)^i (\lambda - 1)^i$\\
+$P_{C_2} = \lambda . (\lambda - 1)$ correct\\\\
+
+$P_{C_n} = (-1)^{n-1} \lambda \left[ \frac{(1-\lambda)^n - 1}{- \lambda} - 1 \right]$\\
+$P_{C_n} = (-1)^{n} \left[ (1-\lambda)^n - 1 + \lambda \right]$\\
+$P_{C_n} = (-1)^n (1 - \lambda) [ (1 - \lambda)^{n-1} - 1 ]$\\
+$P_{C_n} = (\lambda - 1)^n + (-1)^n (\lambda - 1)$\\
+
+\paragraph{Wheel\\}
+Cycle + vertex in the middle\\
+(exercise)\\
+
+\paragraph{Interval graph\\}
+Consider a family of intervals, they are the vertices and two are linked when they intersect.\\
+i.e. intersection graph of a set of intervals of the real line\\
+Coloring is resource assignment e.g. rooms\\
+$\exists S$ set of graphs such that $G$ is interval $\Leftrightarrow G$ does not contain a member of $S$ as a subgraph (1962 Lekkerkerker Boland)\\
+
+Intervals $[a_i, b_i]$ with $b_1 \leqslant b_2 \leqslant ... \leqslant b_n$\\
+There are local cliques: if $1$ and $j$ are connected all in between are connected\\
+$P_G = (\lambda - \deg [a_1, b_1]) P_{G \backslash [a_1,b_1]}$\\
+$\mu_1 := |\{i, b_1 \in I_i\}|$\\
+$P_G = (\lambda - \mu_1 +1) P_{G \backslash [a_1,b_1]}$\\
+$P_G = \Pi_{i=1}^n (\lambda - \mu_i + 1)$\\
+If $\forall i, \lambda  \geqslant \mu_i$ then $P_G(\lambda) <> 0$\\
+$\max_i \mu_i = |$max clique$|$\\
+Every interval graph has a $\omega$-coloring with $\omega$ size of largest clique, i.e. perfect graph\\
+
+\paragraph{The following are equivalent:\\}
+\begin{itemize}
+\item $G$ graph such that every induced subgraph has a simplicial vertex (neighborhood is clique)
+\item $G$ contains no cycle of length $\geqslant 4$ as an induced subgraph
+\item Every inclusion-minimal cut set of $G$ is a clique, where a cut set is a set of vertices such that removing it disconnects the graph
+\end{itemize}
+They imply the existence of an $\omega$-coloring.\\
+
+\paragraph{$P_G = \lambda^n + \Sigma_{i=1}^{n-1} (-1)^i a_{n-i} \lambda^{n-i}$\\}
+With $\forall i, a_i \geqslant 0$\\
+
+For $G$ tree or connected graph, $\forall i > 0, 0 < a_i$\\
+Induction: tree base case, otherwise pick an edgein a cycle\\
+Additionally $a_{n-1} < a_{n-2} < ... a_{\floor*{\frac{n}{2}} + 1}$ (as with binomials)\\
+Recognising chromatic polynomials: open\\
+
+\paragraph{Non connected graphs\\}
+$P_G$ is the product of the chromatic polynoms of connected components\\\\
+
+A graph is 2-connected is it has at least 3 vertices and no cut set which is a singleton (cut vertex)\\
+Equivalently $\forall u <> v$ vertices, $\exists$ 2 vertex disjoint paths from $u$ to $v$.\\
+A graph is non-separable connected if it has at least 2 vertices and no cut vertex.\\
+A block is a maximal non-separable induced subgraph.\\
+Every connected 2+ vertices graph has a block decomposition (every edge is in a unique block)\\
+If the block decomposition is $B_1 ... B_l$ then $P_G = \frac{1}{\lambda^{l-1}} \Pi_i B_i$\\
+
+\paragraph{Roots of $P_G$\\}
+O is a root\\
+If $G$ connected all coefficients are $<>0$ and $0$ has multiplicity 1.\\
+Otherwise multiplicity of O is the number of connected components\\
+If $G$ is connected with 2+ vertices then 1 is a root with multiplicity the number of blocks\\
+NB: in every 2-connected graph, $\exists e$ edge such that $G/e \vee G \backslash e$ is a block\\
+
+\paragraph{The number $R_G$ of acyclic orientations of a graph $G$ is $(-1)^n P_G(-1)$}
+\[ R_G = R_{G/e} + R_{G \backslash e} \]
+
+\paragraph{Petersen Theorem: every bridgeless cubic graph has a perfect matching\\}
+\emph{Vizing: $\forall G, \xi'(G) \leqslant \Delta(G)+1$\\}
+Proof: $\forall k, S_k := \forall v \in V,$ if it and its neighbors have degree at most $k$ and at most one has degree $k$,\\
+then if $G \backslash v$ has a $k$-edge coloring so does $G$\\
+Apply with $k = \Delta+1$\\
+
+\paragraph{Kuratowski theorem: $G$ is planar if and only if it does not contain $K_5$ as a minor\\}
+(minor $H$ of $G$: $H$ obtained from $G$ by deleting vertices and deleting edges and contracting edges)\\
+\emph{Hadwiger conjecture:} if a graph has no $K_l$ minor then it has a $l-1$ coloring\\
+True for $l \leqslant 4$ ($l=4$: uses series parallel graphs)\\
+$l=5 \Rightarrow 4-$color theorem. Wagner: $4-color$ theorem $\Rightarrow l=5$ case.
+$l=6:$ Robertson, Seymour, Thomas\\
+$l \geqslant 7:$ open\\
+
+\paragraph{Construction of graphs with no $K_5$ minor\\}
+Start with planar graphs and $W$\\
+Glue on ($\leqslant 3$)-cliques and erase edges\\
+(where $W$ the Mobius ladder)\\
+
+\paragraph{Mader} $\exists h$ function such that every graph of average degree $h(l)$ contains a subgraph isomorphic to a subdivision of $K_l$\\
+(subdivision replaces an edge with a path)\\
+Then graphs with no $K_l$ minor have bounded chromatic degree.\\
+
+\subsection{List coloring of planar graphs\\}
+Thomasen:if $G$ planar and a 5 color list assigned to each vertex, then $G$ has a coloring.\\
+Restrict to near triangulation: all faces are triangles except outer face. (A planar graph can add edges to become a near triangulation)\\
+
+\emph{If all vertices of a planar graph have even degree, then the graph is 2 face-colorable\\}
+
+\paragraph{A 3-connected cubic planar graph is 4 face-colorable if and only if it is 3 edge-colorable\\}
+Using the Klein group $(\{a,b,c,e\}, +)$ with $x+e = x$, $+$ commutative, $x+x=e$ and $\forall x \; y \; z$ distinct not $e$, $x+y=z$.\\
+eg vectors $(0,1),(1,0),(1,1),(0,0)$\\
+
+\paragraph{Not every  cubic planar graph is hamiltonian (Tutte)\\}
+Grinberg's theorem: if $G$ is a planar graph with hamiltonian cycle, then
+\[ \sum_{i=1}^n (i-2) (\phi_i' - \phi_i'') = 0 \]
+where $phi_i'$ number of faces of degree $i$ in interior of cycle, $\phi_i''$ same with exterior\\
+
+\subsection{Nowhere zero flow}
+$G$ directed graph, $\Gamma$ abelian group. A flow $\phi : E \rightarrow \Gamma$ such that
+\[ \forall v, \Sigma_{e \in \delta^+(v)} \phi(e) = \Sigma_{e \in \delta^-(v)} \phi(e) \]
+and nowhere zero: $\forall e, \phi(e) <> 0$\\\\
+
+A graph has a nowhere zero flow $\Leftrightarrow$ one of its orientations has one.\\\\
+
+For $G$ graph and $D,D'$ orientations, $\exists$ natural bijections between flows on $D$ and $D'$.\\\\
+
+$G$ has a $\mathbb{Z}_2$ nowhere zero flow when $G$ is even: all vertices have even degree.\\\\
+
+A $\mathbb{Z}_2 \times \mathbb{Z}_2$ (= Klein group) NZF is equivalent to being 3 edge colorable.\\
+
+\paragraph{Counting NZF\\}
+$\forall \lambda \in \mathbb{N}, \exists \Gamma_\lambda$ group of order $\lambda$. Let $Q_G(\lambda) :=$ number of NZF on $\Gamma_\lambda$.\\
+We count for a fixed orientation of $G$ but does not depend on it.\\
+NB: we may have loops and multiple edges.\\
+If $G$ has only loops, $Q_G(\lambda) = (\lambda-1)^m$ (where $m := |E(G)|$).\\
+If there is non loop edge $e$, $Q_G(\lambda) = Q_{G/e}(\lambda) - Q_{G \backslash e}(\lambda)$.\\
+Note that $Q_G(\lambda)$ is independent of $\Gamma_\lambda$ and is a polynomial in $\lambda$.\\
+
+\paragraph{Dual of a planar graph\\}
+If $G$ is a planar graph, the plane has connected components. They are the vertices of the dual and are connected for each edge between them.\\
+This may give rise to multiple edges and loops.\\
+\emph{Theorem:} for $G$ plane graph, $P_{G^*}(\lambda) = \lambda Q_G(\lambda)$ where $G^*$ dual of $G$.\\
+If $G$ is connected then $G^{**} = G$. WARNING dual may need to consider in plane properties. SAFE when $G$ 2-connected.\\\\
+
+A coloring of the faces of $G$ is dual to a NZF of $G$ if at every vertex $v$ and an edge $(v,\_)$ separating faces colored $c_1$ and $c_2$,\\
+with $c_1$ on the left for the edge looking up, the edge is colored $c_1 - c_2$.\\
+Starting from a NZF, choose a face and give it an arbitrary color. Each adjacent face has only one possible color.\\
+
+\paragraph{A $k$-flow is a $\mathbb{Z}$-flow with values in $[[-(k-1), k-1]]$.} It is nowhere zero if 0 not used.\\
+$G$ has a nowhere zero $k$-flow if and only if it has a nowhere zero $\mathbb{Z}_k$-flow.\\
+$\Rightarrow$ is obvious.\\
+$\Leftarrow$: consider $\phi$ NZ  $\mathbb{Z}_k$-flow. It is transformed into a $k$-flow by taking the least positive representative for each class.\\
+For each vertex we want the surplus $e(v)$ o be zero. If $\Sigma |e(v)| = 0$ then qed.\\
+Minimise $\Sigma |e(v)|$. If vertices with positive surplus cannot reach vertices with negative surplus, not flow.\\
+Else, find such a path, reverse it and use $k-\_$ for new values. Surplus for both ends decreases in absolute value, other vertices do not change: absurd.\\
+
+\paragraph{Tutte conjectures:}
+\begin{itemize}
+\item Every bridgeless planar graph has a NZ $4$-flow: generalisation of 4 color theorem.
+\item Every 4 edge-connected graph has a NZ $3$-flow. Proven for $8$ and $6$ connected graphs by Thomassen.
+\item Every 4 edge-connected graph has a NZ $4$-flow. Proof by Jaeger.
+\end{itemize}
+
+\paragraph{Nash-Williams theorem:\\} %Nash-Williams single person
+Consider $P$ partition of $V(G)$. $G/P := (P,$ edges between the elements of the partition$)$ (with multiple edges, no loops).\\
+$G$ has $k$ disjoint spanning trees if and only if $\forall P$ partition, $|E(G/P)| \geqslant k(|P|-1)$\\
+If $G$ is $2k$ connected then it has $k$ disjoint spanning trees.\\
+
+\paragraph{Lemma: $G$ has a NZ $(\mathbb{Z}_2)^k$ flow if and only if $G$ can be covered by $k$ even subgraphs.\\}
+
+\paragraph{Jaeger: every 2-connected graph has a NZ 8-flow\\}
+Seymour: NZ 6-flow\\
+Conjecture: 5-flow.\\
+
+
+\subsection{Tutte Polynomial}
+
+For $G$ graph, $c(G) :=$ number of connected components.\\
+$\forall S \subset E(G), c(S) :=$ number of connected components spanned by $S$.\\
+$n(G) := |V(G)|$\\
+
+\begin{itemize}
+\item Whitney polynomial of $G$: $W_G(x,y) := \sum_{S \subset E(G)} x^{c(S)-c(G)} y^{|S| - n(G) + c(S)}$
+\item Tutte polynomial: $T_G(x,y) := W_G(x-1,y-1)$
+\end{itemize}
+Check is polynomial\\\\
+
+For $e = (v,v)$ a loop, $T_G(x,y) = \sum_{S \subset E \backslash e} (x-1)^{c(S)-c(G)} (y-1)^{|S|-n(G)+c(S)} + (x-1)^{c(S) - c(G)} (y-1)^{|S|+1-n(G)+c(S)}$\\
+$T_G(x,y) = y \sum_{S \subset E \backslash e} [(x-1)^{c(S)-c(G)} (y-1)^{|S|-n(G)+c(S)}]$\\
+$T_G(x,y) = y T_{G \backslash e}$\\\\
+
+For $e$ a bridge: $T_G(x,y) = x T_{G / e}(x,y)$\\
+For $e$ non bridge, non loop: $T_G(x,y) = T_{G \backslash e}(x,y) + T_{G / e}(x,y)$\\
+
+\paragraph{For $G, G'$ disjoint polynomials.\\}
+If $G$ one of disjoint union OR gluing at one vertex, $T_G = T_{G'} T_{G''}$ (also true for flow polynomial)\\
+(by induction on $|E(G)|$)\\
+
+\paragraph{$P_G(x) = (-1)^{n(G)-c(G)} x^{c(G)} T_G(1-x, 0)$\\}
+$Q_G(y) = (-1)^{m(G)-n(G)+c(G)} T_G(0,1-y)$\\
+$T_G(1,1) = |\{S | c(S) - c(G) = 0 \wedge |S| - n(G) + c(S)\}|$: subgraphs  containing a spanning forest and no cycle: number of spanning forests.\\
+$T_G(2,1) =$ number of acyclic subgraphs\\
+$T_G(1,2) =$ number of connected subgraphs on $V(G)$\\
+$T_G(2,2) = 2^{|E(G)|}$\\
+
+\paragraph{If $G$ is plane then $T_G(x,y) = T_{G^*}(y,x)$.\\}
+If $G$ plane, $S$ spanning tree, $S^* := E \backslash S$ then $S^*$ spanning tree of $G^*$\\\\
+
+$P_{C_n}(x,y) = y + x + x^2 + ... + x^{n-1}$\\
+For $T$ tree, $P_T(x,y) = x^{n-1}$\\
+
+\paragraph{Reliability polynomial\\}
+$G$ connected graph, $p \in (0,1)$, keep every edge of $G$ with probability $p$ ($\Leftrightarrow$ erase with probability $q := p-1$).\\
+Consider $R_G(p) := \mathbb{P}(G$ connected$)$\\
+$R_G(p) = p^{n-1} q^{m-n+1} T_G(1,1/q)$\\
+
+\paragraph{Reidemeister theorem\\}
+
+
+\[ per(X) := \sum_{\sigma \in \sigma_n} \Pi_{1 \leqslant i \leqslant n} X_{i,\sigma(i)} \]
+\[ det(X) := \sum_{\sigma \in \sigma_n} \varepsilon(\sigma) \Pi_{1 \leqslant i \leqslant n} X_{i,\sigma(i)} \]
+
+\subsection{Combinatorial interpretation of the permanent}
+$G = (U,V,E)$ bipartite graph with $|U| = |V| = n$\\
+Adjacency matrix $A_{i,j} := u_i v_j \in E$\\
+$per(A) =$ number of perfect matchings of $G$\\\\
+
+In directed graph $D = (V,E), |V| = n$ the adjacency matrix $A_{i,j} = (i,j) \in E$\\
+$per(A) =$ number of cycle covers in $D$ (union of vertex disjoint cycles covering all vertices)\\\\
+
+General matrices: for $A_{i,j} <> 0$ put weight $A_{i,j}$ on $u_i, v_i$ in  bipartite graphs.\\
+Then $per(A) =$ sum of weights of all perfect matchings, where the weight of a matching is the product of the weight of its edges.\\
+
+\subsection{Interpretation of Determinant}
+$det(A) =$ sum of signed weights of perfect matchings (sign is that of the permutation)\\
+
+\subsection{Computing perfect matchings}
+Theorem by Edmonds:\\
+Let $G=(U,V,E)$ bipartite graph, $|V| = n$\\
+$A_{i,j} = 0$ if $u_i v_j \notin E$ else $X_{i,j}$\\
+The following are equivalent:
+\begin{itemize}
+\item $G$ has a perfect matching
+\item $per(A) <> 0$
+\item $det(A) <> 0$
+\end{itemize}
+Algorithm: evaluate determinant at random points.\\
+
+\paragraph{Schwarz Zippel Lemma\\}
+Let $K$ field, and $P \in K[X_1 ... X_k]$\\
+Fix set $S \subset K, |S| = m$\\
+Let $d = \deg P \geqslant 1$\\
+Evaluate on random points: if $Y_1 ... Y_k$ drawn independently from the uniform distribution on $S$ then
+\[ \mathbb{P}[P(Y_1 ... Y_k) = 0] \leqslant \frac{d}{m} \]
+eg $d=n, m=2n$ then probability of error less than $\frac{1}{2}$\\
+Proof: induction on $k$:\\
+$k=1$: at most $d$ roots\\
+$k>1$: $P(X_1 ... X_k) = \sum_{j=0}^r P_j(X_1 ... X_{k-1})X_k^j$ for some $r$\\
+Then $\deg P_j \leqslant d-j$. For random $y_1...y_k$ if $P(y_1 ... y_k) = 0$, depending on $P_r(y_1 ... y_{k-1}) = 0$:\\
+If $=0$, probability at most $\frac{d-r}{m}$.\\
+If $<>0$, $y_k$ is a zero of $P(y_1 ... y_{k-1}, Y)$ polynomial of degree $r$: probability at most $\frac{r}{m}$.\\
+Total probability at most $\frac{d-r}{m} + \frac{r}{m} = \frac{d}{m}$\\\\
+
+Then randomized NC: fast parallel algorithm. No known deterministic NC algorithm.\\
+
+\subsection{Polynomial identity testing}
+Input: polynomial $P$ from a fixed family $F$\\
+Output: $P ?= 0$\\
+If $P$ represented as a symbolic determinant: symbolic determinant identity testing (open)\\
+If $P$ given as an arithmetic circuit (open)\\
+If $P$ sum of monomials (easy)\\
+
+\paragraph{Hitting set\\}
+For a family $F$ of polynomials in $K[X_1 ... X_n]$, a hitting set is a set $H \subset K^n$ such that\\
+$\forall P \in F, P <> 0 \rightarrow \exists X \in H, P(X) <> 0$\\
+
+\paragraph{Constructing a perfect matching\\}
+
+\subparagraph{Bipartite graph:} test if $G=(U,V,E)$ has a perfect matching with randomized algorithm.\\
+$M := \emptyset$, if no PM exit.\\
+Pick an edge $e = u_i v_j$, remove it. If resulting graph has perfect matching continue on it: $G := G \backslash e$. Else $M := M+e, G := G \backslash u_i, v_j$.\\
+Repeat until done.\\
+Polynomial time, sequential.\\
+
+\subparagraph{Parallel algorithm\\}
+$M := \emptyset$\\
+For all $e \in E$ in parallel: if $e$ belongs to a perfect matching, add it to $M$ and remove its vertices from the graph.\\
+
+\paragraph{Isolation lemma\\}
+Consider $S = \{x_1 ... x_n\}$ and weights $w_1 ... w_n$. Let $F$ the family of subsets of $S$, the weight of a subset is the sum of the weight of its elements.\\
+If the $w_i$ are independently drawn from the uniform distribution on $[[1, 2n]]$ then with probability at least $\frac{1}{2}, \exists! T \in F$ of minimum weight.\\
+\emph{NB:} some weights will be repeated.\\
+Call $x_i$ bad if it belongs to a subset $T$ of minimum weight but not all of them. There is a unique subset of minimum weight when there is no bad $x_i$.\\
+$\forall i, Pr(x_i$ bad$) \leqslant \frac{1}{2n}$\\
+Then $Pr(\exists i, x_i$ bad$) \leqslant \frac{1}{2}$\\
+In fact for $w_i$ drawn uniformly and any values of $w_j, j<>i, Pr(x_i$ bad$) \leqslant \frac{1}{2n}$\\
+Let $w^*[\bar{x_i}] = \min_{T \in F, x_i \notin T} \sum_{x_j \in T} w_j$ and\\
+$w^*[x_i] = \min_{T \in F, x_i \in T} \sum_{x_j \in T, j<>i} w_j$\\
+By cases:
+\begin{itemize}
+\item $w^*[x_i] \geqslant w^*[\bar{x_i}]$\\
+	For any choice of $w_i$, $w_i$ is not bad: the minimum weight subsets do not contain $x_i$.
+\item $w^*[x_i] < w^*[\bar{x_i}]$\\
+	$x_i$ is bad $\Leftrightarrow w_i = w^*[\bar{x_i}] - w^*[x_i]$\\
+\end{itemize}
+
+\paragraph{Detection of perfect matchings in bipartite graphs\\}
+$A_{i,j} = X_{i,j}$ if $u_iv_j \in E$, $0$ otherwise\\
+$G$ has a perfect matching when $\det A <> 0$\\
+Set $X_{i,j} = 2^{w_{i,j}}$ where the $w_{i,j}$ are drawn independently from the uniform distribution on $[[1 ... 2|E|]]$.\\
+$\det A = \sum_\sigma \varepsilon(\sigma) \Pi_i X_{i,\sigma(i)} = \sum_{\sigma: perfect \; matching} \varepsilon(\sigma) 2^{w(\sigma)}$\\
+If $G$ has a perfect matching:\\
+Isolation lemma with $S := E, F =$ set of perfect matchings.\\
+With probability at least $\frac{1}{2}, \det A = \varepsilon(\sigma^*) 2^{w(\sigma^*)} + \sum_{\sigma +/- \sigma^*} \varepsilon(\sigma) 2^{w(\sigma)}$\\
+Where $\sigma^*$ minimum weight perfect matching.\\
+$\det A \equiv \varepsilon(\sigma^*) 2^{w(\sigma^*)} [2^{w(\sigma^*) +1}]$\\
+$\det A <> 0$\\
+
+\paragraph{Comparison with Schwarz-Zippel\\}
+Values in $[[0 , 2n]]$ or in $[[0, 2^{2n^2}]]$\\
+
+\paragraph{Parallel algorithm to construct a perfect matching\\}
+Construct the minimum weight perfect matching: $2^{w(\sigma^*)}$ is the highest power of 2 dividing $\det A$\\
+If $e \in \sigma^*$, removing it changes the powers of 2 dividing $\det A$.\\
+Algorithm:
+\begin{itemize}
+\item Construct $A$ with $A_{i,j} = 0 \Rightarrow u_i v_j \notin E$, else $A_{i,j} = 2^{w_{i,j}}$ for $w_{i,j}$ in uniform ditribution over $[[1,2|E|]]$
+\item Compute $w = \det A$. If $w=0$ no perfect matching. Else compute largest $p, 2^p | w$
+\item For $(u_i, v_j) \in E$ in parallel, construct $A^{(ij)}$ by removing the edge, compute its determinant $d_{i,j}$ and $p_{i,j} = \max_p, p | d_{i,j}$
+\item If $p_{i,j} <> p, u_i v_j \in \sigma^*$
+\end{itemize}
+NB: $p_{i,j} = \infty$ for $d_{i,j} = 0$\\
+
+\subsection{General graph version}
+$G=(V,E), n = |V|$\\
+Tutte matrix: $A_{i,j} = X_{i,j}$ if $i,j \in E \wedge i < j$, $-X_{i,j}$ if $i,j \in E \wedge i > j$, $0$ otherwise.\\
+$G$ has a perfect matching $\Leftrightarrow \det A <> 0$\\
+$\det A = \sum_{\sigma} \varepsilon(\sigma) w(\sigma)$ where $\sigma$ cycle covers in the directed graph where $\{i,j\} \in E \rightarrow (i,j) \wedge (j, i) \in E'$\\
+$w(\sigma)$ product of the edge weights, $\varepsilon(\sigma) = (-1)^{|\sigma|+1}$ where $|\sigma|$ length of the cycle.\\
+Cover by length 2 cycles creates non cancelled monomial: $\det A <> 0$\\
+For $X_{i,j} = i,j \in M$ perfect matching, $\det A = 1$\\
+If no perfect matching, a cycle cover must contain an odd cycle $\gamma \in \sigma$, choose the one with smallest vertex id.\\
+Reorient to get new vertex cover $I(\sigma)$ with same $\varepsilon$. The weight $w(\gamma') = -w(\gamma)$: the monomials cancel.\\
+
+\paragraph{Alternate matrix\\}
+$A_{i,j}' = \varepsilon_{i,j} X_{i,j}$ for $i,j \in E$, $\varepsilon_{i,j} = - \varepsilon_{j,i} \in \{-1,1\}$\\
+
+\subsection{Counting perfect matchings in planar graphs}
+FKT algorithm (Fisher Kasteleyn Temperley, in statistical physics, 1960s)\\
+Let $G$ planar graph, there is an orientation $\overrightarrow{G}$ of $G$ such that if we set\\
+$A_{i,j} = 1$ if $i,j \in \overrightarrow{E}$, $-1$ if $i,j \in \overrightarrow{E}$, $0$ otherwise\\
+Then the number of perfect matchings of $G$ is $\sqrt{\det A}$\\
+Such orientations are called Pfaffian orientations.\\
+
+\paragraph{Let $M,M'$ perfect matchings of $G$ (general graph).} $M \bigcup M'$ is a vertex-disjoint union of edges and even cycles.\\
+Let $C$ even cycle of $G$ and $\overrightarrow{G}$ an orientation of $G$. We pick an orientation of $C$.\\
+$C$ is oddly oriented if the number of edges with the same orientation in $C$ and $\overrightarrow{G}$ is odd (co-oriented edges).\\
+NB: independent of the orientation on $C$.\\
+An orientation is Pfaffian if for any pair of perfect matchings, the cycles in their union are oddly oriented.\\
+
+\paragraph{Kasteleyn's theorem:} for every Pfaffian orientation of $G$, the number of perfect matchings is the square root of the determinant of its Tutte matrix.\\
+Combinatorial interpretation of  $\det A[\overrightarrow{G}]$:\\
+$\overleftrightarrow{G}$ where edges $G$ are replaced by edges in both directions, with $+/- 1$ depending on the orientation in $\overrightarrow{G}$.\\
+$\det A[\rightarrow^{G}] = \sum_{\sigma \; cycle \; cover \; of \; \leftrightarrow^{G}} \varepsilon(\sigma) w(\sigma)$\\
+There is a bijection between pairs $M,M'$ of perfect matchings and even cycle covers of $\leftrightarrow^{G}$ (NB: all cycles are even).\\
+Define $\phi(M,M')$: split the union $M \bigcup M'$ between edges and even cycles, replace lone edges by the 2-cycle, even cycles by themselves (orienting independent of the matchings).\\
+Exemple orientation for a cycle in $M \bigcup M'$: index vertices of $G$, start at least vertex then orient the incident edge from $M'$ towards it.\\\\
+
+Then $\det A =$ number of pairs of perfect matchings $=$ square of number of perfect matchings.\\
+$\det A = \sum_\sigma \varepsilon(\sigma) w(\sigma) = \sum_{\sigma \; even \; cover} \varepsilon(\sigma) w(\sigma)$ and $\varepsilon(\sigma) w(\sigma) = 1$ for even covers.\\
+
+\paragraph{Any planar graph has a Pfaffian orientation.\\}
+NB: any a tree, all orientations are Pfaffian.\\
+Lemma: let $G$ connected plane graph. Fix an orientation $\tilde{G}$ of $G$, and assume all faces have an odd number of edges oriented clockwise (except maybe infinite face).\\
+Then for any (simple) cycle $C$ of $G$ the number of edges of $C$ with clockwise orientation and the number of vertices of $G$ inside $C$ are of different parities.\\
+And $\tilde{G}$ is Pfaffian.\\
+Induction on edges for connected graph:\\
+- $m=n-1$: tree: trivial\\
+- pick an edge separating a finite face from the infinite face, $G' = G \backslash e$. $\tilde{G}$ orientation from induction, adding $e$ creates a finite face, orient $e$ so that that face has an odd number of clockwise edges.\\
+
+\paragraph{Open problem: check existence of Pfaffian orientation in general graphs efficiently.\\}
+Works for bipartite graphs.\\
+
+\subsection{Coding complexity}
+
+$\#-P$ complete: count the number of satisfying assignment for 3 SAT\\
+Count perfect matchings in a bipartite graph\\
+
+\paragraph{Toda's Theorem\\}
+All problems in the polynomial hierarchy can be solved in polynomial time given an oracle for a $\#P$ complete problem.\\
+
+\paragraph{Definition\\}
+Fix alphabet $\Sigma$. Let $f : \Sigma^* \rightarrow \mathbb{N}$.\\
+$f \in \#P := \exists A \in P, p$ polynomial, $\forall n, \forall x \in \Sigma^n, f(x) = |\lbrace y \in \Sigma^{\leq p(n)}, (x,y) \in A \rbrace|$\\
+$\Leftrightarrow$ number of accepting paths of polynomial time non deterministic machine.\\
+
+\begin{propo}[$FP \subseteq \#P$ where $FP$ functions computable in polynomial time]
+The problem $\{ (x,y) | \mathrm{eval}(y) \leq f(x) \}$ is P.
+\end{propo}
+
+\paragraph{Definition:} $f \in \#P$ is $\#P$ complete when all functions in $\#$ polynomial time reduce to $f$.\\
+Parsimonious reduction: $g(x) = f(i(x))$ with $i$ computable in polynomial time.\\
+Many one reduction: $g(x) = o(f(i(x))$ with $i,o$ computable in polynomial time.\\
+Oracle reduction: $g$ computable in polynomial time by a turing machine with access to an oracle for $f$.\\\\
+
+$\#3SAT$ is $\#P$ complete for parsimonious reduction.\\
+$\#$ perfect matchings is complete for many one reduction. If complete for parsimonious reduction then $P=NP$.\\
+$\#$ exact 3 cover is $\#P$ complete for parsimonious reduction.\\
+(Exact 3 cover: NP complete problem, in: $X, T \subseteq \binom{X}{3}$; out: number of exact covers of $X$ by elements of $T$)\\
+Lemma: $\#$ exact 3 covers $\subseteq \#w$ bipartite match\\
+
+
+
+\end{document}
